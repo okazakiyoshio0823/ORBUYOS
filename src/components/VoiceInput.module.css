@@ -1,0 +1,127 @@
+.container {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.header h3 {
+    margin: 0;
+    font-size: 1.125rem;
+}
+
+.hint {
+    font-size: 0.75rem;
+    color: #666;
+    background: #f5f5f5;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.micButton {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, #1b263b, #3a6082);
+    color: white;
+    font-size: 1.25rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(27, 38, 59, 0.3);
+}
+
+.micButton:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(27, 38, 59, 0.4);
+}
+
+.micButton.listening {
+    background: linear-gradient(135deg, #f44336, #e91e63);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 20px rgba(244, 67, 54, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(244, 67, 54, 0);
+    }
+}
+
+.transcript {
+    padding: 1rem;
+    background: #e3f2fd;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.label {
+    font-size: 0.75rem;
+    color: #1976D2;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.text {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #0d47a1;
+}
+
+.examples {
+    padding: 1rem;
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.exampleTitle {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #666;
+}
+
+.examples ul {
+    margin: 0;
+    padding-left: 1.25rem;
+}
+
+.examples li {
+    font-size: 0.8125rem;
+    color: #666;
+    margin-bottom: 0.25rem;
+}
+
+.unsupported {
+    padding: 1rem;
+    background: #fff3e0;
+    border-radius: 8px;
+    color: #e65100;
+    text-align: center;
+}
+
+/* Modal integration */
+.voiceModal {
+    max-width: 400px;
+}

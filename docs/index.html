@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ORBIYOS - 解体業・自動車整備業向けの汎用業務支援システム。作業者別カレンダー、車両管理、音声入力、CSVインポート機能を搭載。">
+    <meta name="keywords" content="車両管理, 業務支援, カレンダー, 解体業, 整備業, 音声入力">
+    <title>ORBIYOS - 汎用業務支援システム</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">🚗 ORBIYOS</div>
+            <ul class="nav-links">
+                <li><a href="#features">機能</a></li>
+                <li><a href="#tech">技術スタック</a></li>
+                <li><a href="#setup">セットアップ</a></li>
+                <li><a href="#docs">ドキュメント</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>ORBIYOS</h1>
+        <p class="subtitle">汎用業務支援システム</p>
+        <p class="tagline">解体業・自動車整備業向けの次世代業務管理システム。<br>作業の可視化と効率化を実現します。</p>
+        
+        <div class="cta-buttons">
+            <a href="#setup" class="btn btn-primary">
+                <span>🚀 今すぐ始める</span>
+            </a>
+            <a href="#docs" class="btn btn-secondary">
+                <span>📚 ドキュメントを見る</span>
+            </a>
+        </div>
+
+        <div class="screenshot-container">
+            <img src="screenshot.png" alt="ORBIYOSダッシュボード画面">
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section">
+        <h2 class="section-title">主要機能</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="feature-icon">📅</span>
+                <h3>作業者別カレンダー</h3>
+                <p>複数の作業者のスケジュールを一目で把握。タイムライン形式で作業の進捗をリアルタイムに確認できます。</p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">🚗</span>
+                <h3>車両登録・管理</h3>
+                <p>ナンバープレート、メーカー、車名、型式などの詳細情報を簡単に登録・検索。車両情報を一元管理できます。</p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">📋</span>
+                <h3>作業割当・ステータス管理</h3>
+                <p>作業の割り当てから完了まで、ステータスを色分けして視覚的に管理。未着手・作業中・中断・完了を一目で判別できます。</p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">🎤</span>
+                <h3>音声入力対応</h3>
+                <p>Web Speech APIを活用した音声コマンド入力。手を使わずに作業開始・完了・メモ追加が可能です。</p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">📥</span>
+                <h3>CSVインポート</h3>
+                <p>既存の車両データをCSVファイルから一括登録。日本語・英語カラム名の両方に対応しています。</p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">🔐</span>
+                <h3>作業者認証</h3>
+                <p>作業者ごとにログイン管理。業種別（解体業/整備業）にグループ化され、適切な権限で安全に運用できます。</p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">📱</span>
+                <h3>マルチデバイス対応</h3>
+                <p>タブレット・スマートフォンでも快適に操作可能。現場での作業記録もスムーズに行えます。</p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">📊</span>
+                <h3>統計・レポート</h3>
+                <p>日次の入庫台数、作業予定、完了数をダッシュボードで表示。業務の進捗を数値で把握できます。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack Section -->
+    <section id="tech" class="section">
+        <h2 class="section-title">技術スタック</h2>
+        <div class="tech-stack">
+            <span class="tech-badge">⚛️ Next.js 16</span>
+            <span class="tech-badge">📘 TypeScript</span>
+            <span class="tech-badge">⚡ React 19</span>
+            <span class="tech-badge">🗄️ SQLite</span>
+            <span class="tech-badge">🎤 Web Speech API</span>
+            <span class="tech-badge">🎨 CSS Modules</span>
+            <span class="tech-badge">📱 Responsive Design</span>
+        </div>
+    </section>
+
+    <!-- Setup Section -->
+    <section id="setup" class="section">
+        <h2 class="section-title">セットアップ</h2>
+        <div class="setup-section">
+            <div class="setup-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>リポジトリをクローン</h4>
+                        <p>プロジェクトをローカルにダウンロードします。</p>
+                        <pre><code>git clone https://github.com/yourusername/orbiyos.git
+cd orbiyos</code></pre>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>依存関係をインストール</h4>
+                        <p>必要なパッケージをインストールします。</p>
+                        <pre><code>npm install</code></pre>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>開発サーバーを起動</h4>
+                        <p>ローカル環境で動作確認します。</p>
+                        <pre><code>npm run dev</code></pre>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h4>ブラウザでアクセス</h4>
+                        <p>http://localhost:3000 にアクセスして、ログイン画面から作業者を選択してログインします。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(37, 99, 235, 0.1); border-left: 4px solid var(--primary-color); border-radius: 8px;">
+                <h4 style="margin-bottom: 0.5rem; color: var(--primary-light);">💡 タブレット・スマホからアクセス</h4>
+                <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">同じWi-Fiネットワーク内のデバイスからアクセスできます。</p>
+                <pre><code># PCのIPアドレスを確認
+ipconfig
+
+# タブレットのブラウザで以下にアクセス
+http://[PCのIPアドレス]:3000</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Documentation Section -->
+    <section id="docs" class="section">
+        <h2 class="section-title">ドキュメント</h2>
+        <div class="doc-links">
+            <a href="操作マニュアル.md" class="doc-card">
+                <h3>📖 操作マニュアル</h3>
+                <p>システムの基本操作、ログイン、車両登録、作業割当、音声入力、CSVインポートなど、日常的な操作方法を詳しく解説しています。</p>
+            </a>
+
+            <a href="運用ガイド.md" class="doc-card">
+                <h3>⚙️ 運用ガイド</h3>
+                <p>システム管理者向けのガイド。データベース管理、バックアップ、作業者追加、本番環境デプロイ、トラブルシューティングなどを解説しています。</p>
+            </a>
+        </div>
+
+        <div style="margin-top: 2rem; text-align: center;">
+            <a href="../README.md" class="btn btn-secondary">
+                <span>📄 README を見る</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 ORBIYOS - 汎用業務支援システム | Private License</p>
+        <p style="margin-top: 0.5rem; font-size: 0.75rem;">解体業・自動車整備業向けの業務管理システム</p>
+    </footer>
+
+    <script>
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add subtle parallax effect to hero section
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero');
+            if (hero && scrolled < 800) {
+                hero.style.transform = `translateY(${scrolled * 0.3}px)`;
+                hero.style.opacity = 1 - (scrolled / 800);
+            }
+        });
+
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.8s ease-out forwards';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-card, .doc-card, .step').forEach(el => {
+            el.style.opacity = '0';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
