@@ -1,0 +1,211 @@
+/* ========== Reports Page Styles ========== */
+
+.periodSelector {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.periodSelector h2 {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.5rem;
+    color: #1b263b;
+}
+
+.periodInputs {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.inputGroup label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #666;
+}
+
+.dateInput {
+    padding: 0.75rem 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 1rem;
+    min-width: 180px;
+}
+
+.dateSeparator {
+    font-size: 1.25rem;
+    color: #666;
+    margin-top: 1.5rem;
+}
+
+.reportSection {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.sectionTitle {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.25rem;
+    color: #1b263b;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 0.75rem;
+}
+
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.statCard {
+    background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+    padding: 1.5rem;
+    border-radius: 8px;
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.statCard:hover {
+    transform: translateY(-4px);
+}
+
+.statLabel {
+    font-size: 0.875rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.statValue {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1b263b;
+}
+
+.chartContainer {
+    margin-top: 2rem;
+}
+
+.chartTitle {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1b263b;
+    margin-bottom: 1rem;
+}
+
+.barChart {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.barRow {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.barLabel {
+    min-width: 120px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.barWrapper {
+    flex: 1;
+    height: 28px;
+    background: #f5f5f5;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.bar {
+    height: 100%;
+    background: linear-gradient(90deg, #2196F3 0%, #1976D2 100%);
+    transition: width 0.3s ease;
+    border-radius: 4px;
+}
+
+.barValue {
+    min-width: 60px;
+    text-align: right;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1b263b;
+}
+
+.noData {
+    text-align: center;
+    padding: 3rem;
+    color: #999;
+    font-size: 1.125rem;
+}
+
+/* Navigation */
+.headerNav {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: 1rem;
+    padding-left: 1rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.navLink {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    text-decoration: none;
+    transition: all 0.2s;
+    font-size: 0.875rem;
+}
+
+.navLink:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.navLink.active {
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 768px) {
+    .periodInputs {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .dateSeparator {
+        margin: 0;
+    }
+
+    .statsGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .barRow {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .barLabel {
+        min-width: auto;
+    }
+
+    .barValue {
+        text-align: left;
+    }
+}

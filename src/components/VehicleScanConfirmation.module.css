@@ -1,0 +1,200 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.popup {
+    background: white;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.3s ease;
+    overflow: hidden;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 1.5rem;
+    text-align: center;
+    color: white;
+}
+
+.scanBadge {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+}
+
+.title {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.vehicleCard {
+    padding: 1.5rem;
+}
+
+.plateNumber {
+    background: linear-gradient(135deg, #1e3a5f 0%, #0d2137 100%);
+    color: white;
+    border-radius: 12px;
+    padding: 1.2rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    border: 3px solid #4a90d9;
+}
+
+.plateLabel {
+    display: block;
+    font-size: 0.75rem;
+    opacity: 0.8;
+    margin-bottom: 0.3rem;
+}
+
+.plateValue {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: bold;
+    letter-spacing: 0.1em;
+    font-family: 'Noto Sans JP', sans-serif;
+}
+
+.infoGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.infoItem {
+    background: #f8f9fa;
+    padding: 0.8rem;
+    border-radius: 8px;
+}
+
+.label {
+    display: block;
+    font-size: 0.75rem;
+    color: #666;
+    margin-bottom: 0.2rem;
+}
+
+.value {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.rawData {
+    margin-top: 1rem;
+    padding: 0.8rem;
+    background: #f1f3f5;
+    border-radius: 8px;
+    font-size: 0.8rem;
+}
+
+.rawLabel {
+    color: #666;
+    display: block;
+    margin-bottom: 0.3rem;
+}
+
+.rawValue {
+    display: block;
+    word-break: break-all;
+    color: #495057;
+    font-family: monospace;
+}
+
+.actions {
+    display: flex;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem 1.5rem;
+    border-top: 1px solid #eee;
+}
+
+.cancelBtn,
+.editBtn,
+.confirmBtn {
+    flex: 1;
+    padding: 0.9rem 1rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+}
+
+.cancelBtn {
+    background: #f1f3f5;
+    color: #666;
+}
+
+.cancelBtn:hover {
+    background: #e9ecef;
+}
+
+.editBtn {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.editBtn:hover {
+    background: #ffeeba;
+}
+
+.confirmBtn {
+    background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+    color: white;
+    flex: 1.5;
+}
+
+.confirmBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.confirmBtn:active {
+    transform: translateY(0);
+}
