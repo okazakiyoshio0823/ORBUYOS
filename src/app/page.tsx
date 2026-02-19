@@ -717,14 +717,17 @@ export default function Home() {
                 if (!isListening) {
                   // 音声認識開始
                   if (typeof window !== 'undefined') {
-                    const SpeechRecognition = window.SpeechRecognition || (window as unknown as { webkitSpeechRecognition: new () => SpeechRecognition }).webkitSpeechRecognition;
-                    if (SpeechRecognition) {
-                      const recognition = new SpeechRecognition();
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const SpeechRecognitionAPI = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+                    if (SpeechRecognitionAPI) {
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      const recognition = new SpeechRecognitionAPI() as any;
                       recognition.continuous = false;
                       recognition.interimResults = true;
                       recognition.lang = 'ja-JP';
                       recognition.onstart = () => setIsListening(true);
-                      recognition.onresult = (event: SpeechRecognitionEvent) => {
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      recognition.onresult = (event: any) => {
                         let finalTranscript = '';
                         let interimTranscript = '';
                         for (let i = event.resultIndex; i < event.results.length; i++) {
