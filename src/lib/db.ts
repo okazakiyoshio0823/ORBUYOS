@@ -132,6 +132,16 @@ CREATE TABLE IF NOT EXISTS worker_performance (
   FOREIGN KEY (service_id) REFERENCES service_menus(id)
 );
 
+-- 初期データ: 作業者
+INSERT OR IGNORE INTO workers (id, name, role, industry) VALUES
+(1, '山田 太郎', 'worker', 'demolition'),
+(2, '佐藤 次郎', 'worker', 'demolition'),
+(3, '田中 三郎', 'worker', 'demolition'),
+(4, '鈴木 健太', 'worker', 'auto_repair'),
+(5, '高橋 修', 'worker', 'auto_repair'),
+(6, '渡辺 勇', 'worker', 'auto_repair'),
+(7, '伊藤 誠', 'worker', 'auto_repair');
+
 -- 初期データ: 部品マスタ
 INSERT OR IGNORE INTO parts_master (id, name, category, default_minutes) VALUES
 (1, 'エンジン', 'engine', 60),
