@@ -358,6 +358,17 @@ export default function Home() {
     setActiveModal('assignment');
   };
 
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/login', { method: 'DELETE' });
+      router.push('/login');
+      router.refresh(); // Ensure server components re-render
+    } catch (error) {
+      console.error('Logout failed:', error);
+      router.push('/login');
+    }
+  };
+
   return (
     <div className={styles.container}>
       {/* ヘッダー */}
@@ -387,7 +398,7 @@ export default function Home() {
 
           <div className={styles.userInfo}>
             <span className={styles.userName}>{currentUser?.name || 'ゲスト'}</span>
-            <button className={styles.logoutBtn} onClick={() => router.push('/login')}>ログアウト</button>
+            <button className={styles.logoutBtn} onClick={handleLogout}>ログアウト</button>
           </div>
         </div>
       </header>
