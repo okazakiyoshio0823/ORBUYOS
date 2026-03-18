@@ -713,6 +713,7 @@ interface WorkAssignmentFormProps {
     workers: any[];  // TODO: Define strict type
     parts: any[];    // TODO: Define strict type
     services: any[]; // TODO: Define strict type
+    inventoryParts?: any[]; // 追加: 在庫部品
     initialValues?: Partial<WorkAssignmentData>;
     onSwitchToRegister?: () => void;
 }
@@ -727,7 +728,7 @@ interface WorkAssignmentData {
     customTaskContent?: string;
 }
 
-export function WorkAssignmentForm({ industry, onSubmit, onCancel, vehicles, workers, parts, services, initialValues, onSwitchToRegister }: WorkAssignmentFormProps) {
+export function WorkAssignmentForm({ industry, onSubmit, onCancel, vehicles, workers, parts, services, inventoryParts, initialValues, onSwitchToRegister }: WorkAssignmentFormProps) {
     const [formData, setFormData] = useState<WorkAssignmentData>({
         vehicleId: initialValues?.vehicleId || '',
         workerId: initialValues?.workerId || '',
@@ -821,11 +822,22 @@ export function WorkAssignmentForm({ industry, onSubmit, onCancel, vehicles, wor
                     >
                         <option value="">選択してください</option>
                         <option value="manual">手入力 (時間自由)</option>
-                        {partsOrServices.map(item => (
-                            <option key={item.id} value={item.id}>
-                                {item.name} ({item.default_minutes}分)
-                            </option>
-                        ))}
+                        {industry === 'auto_repair' && inventoryParts && inventoryParts.length > 0 && (
+                            <optgroup label="♻️ エコ在庫部品 (解体抽出)">
+                                {inventoryParts.map(item => (
+                                    <option key={`inv-${item.id}`} value={`manual`} title={`在庫ID:${item.id}`}>
+                                        [中古] {item.part_name} (予想価格: ¥{item.price_estimate})
+                                    </option>
+                                ))}
+                            </optgroup>
+                        )}
+                        <optgroup label="標準作業/部品">
+                            {partsOrServices.map(item => (
+                                <option key={item.id} value={item.id}>
+                                    {item.name} ({item.default_minutes}分)
+                                </option>
+                            ))}
+                        </optgroup>
                     </select>
                 </div>
 

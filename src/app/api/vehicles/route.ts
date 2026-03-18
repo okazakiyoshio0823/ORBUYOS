@@ -12,7 +12,7 @@ export async function GET(request: Request) {
         if (industry) where.industry = industry;
         if (status) where.status = status;
 
-        const vehicles = findAll('vehicles', Object.keys(where).length > 0 ? where : undefined);
+        const vehicles = await findAll('vehicles', Object.keys(where).length > 0 ? where : undefined);
 
         return NextResponse.json({ success: true, data: vehicles });
     } catch (error) {

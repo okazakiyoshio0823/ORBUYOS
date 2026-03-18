@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/db';
+import { getDB } from '@/lib/db';
 
 // POST /api/import/vehicles - 車両データのCSVインポート
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { data, industry } = body;
+        const data = body.data;
+        const industry = body.industry;
 
         if (!data || !Array.isArray(data)) {
             return NextResponse.json(
@@ -14,17 +15,17 @@ export async function POST(request: Request) {
             );
         }
 
-        const database = getDatabase();
+        const db = getDB();
         let imported = 0;
         let skipped = 0;
         const errors: string[] = [];
 
-        const insertVehicle = database.prepare(`
+        const sql = `
       INSERT INTO vehicles (
         plate_number, maker, model, model_code, year, color,
         customer_id, industry, status, received_date, notes
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?)
-    `);
+    `;
 
         for (const row of data) {
             try {
@@ -44,7 +45,7 @@ export async function POST(request: Request) {
                 const notes = row.notes || row.備考 || '';
                 const receivedDate = row.receivedDate || row.received_date || row.入庫日 || new Date().toISOString().split('T')[0];
 
-                insertVehicle.run(
+                await db.mutate(sql, [
                     plateNumber,
                     maker,
                     model,
@@ -55,12 +56,13 @@ export async function POST(request: Request) {
                     industry || 'demolition',
                     receivedDate,
                     notes
-                );
+                ]);
 
                 imported++;
             } catch (err) {
                 const error = err as Error;
                 errors.push(`Row error: ${error.message}`);
+                console.error('Row import error:', error);
                 skipped++;
             }
         }

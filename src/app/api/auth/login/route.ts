@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/db';
+import { getDB } from '@/lib/db';
 import { cookies } from 'next/headers';
 
 // POST /api/auth/login - ログイン
@@ -15,18 +15,18 @@ export async function POST(request: Request) {
             );
         }
 
-        const database = getDatabase();
+        const db = getDB();
 
         // 作業者を取得
-        const worker = database.prepare(
-            'SELECT * FROM workers WHERE id = ?'
-        ).get(workerId) as {
+        const rows = await db.query<{
             id: number;
             name: string;
             role: string;
             industry: string;
             pin?: string;
-        } | undefined;
+        }>('SELECT * FROM workers WHERE id = ?', [workerId]);
+
+        const worker = rows[0];
 
         if (!worker) {
             return NextResponse.json(
@@ -96,15 +96,15 @@ export async function GET() {
             });
         }
 
-        const database = getDatabase();
-        const worker = database.prepare(
-            'SELECT id, name, role, industry FROM workers WHERE id = ?'
-        ).get(workerId) as {
+        const db = getDB();
+        const rows = await db.query<{
             id: number;
             name: string;
             role: string;
             industry: string;
-        } | undefined;
+        }>('SELECT id, name, role, industry FROM workers WHERE id = ?', [workerId]);
+
+        const worker = rows[0];
 
         if (!worker) {
             return NextResponse.json({
@@ -132,6 +132,7 @@ export async function GET() {
 export async function DELETE() {
     try {
         const cookieStore = await cookies();
+
         cookieStore.delete('orbiyos_session');
         cookieStore.delete('orbiyos_worker_id');
 

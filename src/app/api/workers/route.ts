@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDatabase, findAll, insert, update, remove } from '@/lib/db';
+import { findAll, insert } from '@/lib/db';
 
 // GET /api/workers - 作業者一覧取得
 export async function GET(request: Request) {
@@ -8,7 +8,8 @@ export async function GET(request: Request) {
         const industry = searchParams.get('industry');
 
         const where = industry ? { industry } : undefined;
-        const workers = findAll('workers', where);
+        // 型定義があいまいなため、findAllのジェネリクスを指定するか、またはanyで受ける
+        const workers = await findAll('workers', where);
 
         return NextResponse.json({ success: true, data: workers });
     } catch (error) {
@@ -33,7 +34,7 @@ export async function POST(request: Request) {
             );
         }
 
-        const id = insert('workers', { name, role, industry });
+        const id = await insert('workers', { name, role, industry });
 
         return NextResponse.json({ success: true, data: { id, name, role, industry } });
     } catch (error) {

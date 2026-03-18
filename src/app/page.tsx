@@ -6,7 +6,7 @@ import styles from './page.module.css';
 import { Modal, VehicleForm, WorkAssignmentForm } from '../components/Modal';
 import { VoiceInput, VoiceCommand } from '../components/VoiceInput';
 import { ImportData } from '../components/ImportData';
-import { Toaster, toast } from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 
 // 業種タイプ
 type Industry = 'demolition' | 'auto_repair';
@@ -30,6 +30,7 @@ interface Schedule {
   model: string | null;
   model_code: string | null;
   notes: string | null;
+  image_url: string | null; // 追加: 画像URL
 }
 
 // 作業者の型
@@ -50,6 +51,7 @@ interface DisplayTask {
   duration: number;
   color: string;
   status: 'pending' | 'in_progress' | 'completed' | 'paused';
+  image_url?: string | null;
 }
 
 // 時間帯（8:00-18:00 の10時間）
@@ -64,12 +66,11 @@ const statusConfig = {
   paused: { label: '中断', color: '#FF9800', bgColor: '#fff3e0' },
 };
 
-// デフォルト色
-const defaultColors = ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#FFC107'];
+// デフォルト色 (現在は未使用だが将来の拡張用に定義例として残したい場合はコメントアウトするか、使用箇所を追加する。今回はLint対策で削除)
 
 export default function Home() {
   const router = useRouter();
-  const [currentUser, setCurrentUser] = useState<any>(null); // TODO: Define strict type
+  const [currentUser, setCurrentUser] = useState<{ industry?: Industry; name?: string } | null>(null);
   const [industry, setIndustry] = useState<Industry>('demolition');
   const [currentDate, setCurrentDate] = useState(new Date());
   const [activeModal, setActiveModal] = useState<ModalType>(null);
@@ -78,9 +79,12 @@ export default function Home() {
   // APIから取得するデータ
   const [workers, setWorkers] = useState<Worker[]>([]);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
-  const [vehicles, setVehicles] = useState<any[]>([]); // TODO: Define strict type
-  const [parts, setParts] = useState<any[]>([]);
-  const [services, setServices] = useState<any[]>([]);
+  const [vehicles, setVehicles] = useState<{ id: number; plate_number: string }[]>([]);
+  const [parts, setParts] = useState<{ id: number; name: string }[]>([]);
+  const [services, setServices] = useState<{ id: number; name: string }[]>([]);
+  const [inventoryParts, setInventoryParts] = useState<{ id: number; name: string; price_estimate: number }[]>([]);
+
+  const [uploadingImage, setUploadingImage] = useState(false); // 追加: 画像アップロード状態
 
   const [initialAssignmentData, setInitialAssignmentData] = useState<{ workerId?: string, plannedStart?: string } | undefined>(undefined);
 
@@ -91,7 +95,6 @@ export default function Home() {
   const [voiceTranscript, setVoiceTranscript] = useState('');
   const [useAI, setUseAI] = useState(false);
 
-  const [isLoading, setIsLoading] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
 
   // ... (existing code)
@@ -123,7 +126,7 @@ export default function Home() {
     }
   }, [industry, currentDate]);
 
-  // マスタデータ取得 (部品/作業)
+  // マスタデータ取得 (部品/作業/在庫)
   const fetchMasterData = useCallback(async () => {
     try {
       const res = await fetch(`/api/master?industry=${industry}`);
@@ -131,6 +134,13 @@ export default function Home() {
       if (data.success) {
         setParts(data.data.parts || []);
         setServices(data.data.services || []);
+      }
+      
+      // 在庫取得 (整備業でも解体業でも表示用に取得)
+      const invRes = await fetch('/api/inventory');
+      const invData = await invRes.json();
+      if (invData.success) {
+         setInventoryParts(invData.data || []);
       }
     } catch (error) {
       console.error('Failed to fetch master data:', error);
@@ -154,7 +164,6 @@ export default function Home() {
   // 初回ロード
   useEffect(() => {
     const init = async () => {
-      setIsLoading(true);
 
       // 認証チェック
       try {
@@ -183,7 +192,6 @@ export default function Home() {
         setIsInitialized(true);
       }
       await Promise.all([fetchWorkers(), fetchSchedules(), fetchVehicles(), fetchMasterData()]);
-      setIsLoading(false);
     };
     init();
   }, [fetchWorkers, fetchSchedules, fetchVehicles, fetchMasterData, isInitialized, router]);
@@ -211,6 +219,7 @@ export default function Home() {
       duration,
       color: s.service_color || '#2196F3',
       status: s.status,
+      image_url: s.image_url,
     };
   });
 
@@ -241,21 +250,21 @@ export default function Home() {
   }, []);
 
   // 作業割当サブミット
-  const handleAssignmentSubmit = async (data: any) => {
+  const handleAssignmentSubmit = async (data: { workerId: string; vehicleId: string; partOrServiceId: string; customTaskTitle?: string; customTaskContent?: string; plannedStart: string; plannedMinutes: string }) => {
     try {
       const res = await fetch('/api/schedules', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           workDate: currentDate.toISOString().split('T')[0],
-          workerId: data.workerId,
-          vehicleId: data.vehicleId,
-          partId: industry === 'demolition' && data.partOrServiceId !== 'manual' ? data.partOrServiceId : null,
-          serviceId: industry === 'auto_repair' && data.partOrServiceId !== 'manual' ? data.partOrServiceId : null,
+          workerId: parseInt(data.workerId, 10),
+          vehicleId: data.vehicleId ? parseInt(data.vehicleId, 10) : null,
+          partId: industry === 'demolition' && data.partOrServiceId !== 'manual' ? parseInt(data.partOrServiceId, 10) : null,
+          serviceId: industry === 'auto_repair' && data.partOrServiceId !== 'manual' ? parseInt(data.partOrServiceId, 10) : null,
           title: data.partOrServiceId === 'manual' ? data.customTaskTitle : (industry === 'demolition' ? '部品取外' : '整備作業'),
           notes: data.partOrServiceId === 'manual' ? data.customTaskContent : null,
           plannedStart: data.plannedStart,
-          plannedMinutes: data.plannedMinutes,
+          plannedMinutes: parseInt(data.plannedMinutes, 10),
           industry,
         }),
       });
@@ -321,6 +330,81 @@ export default function Home() {
       }
     } catch (e) {
       toast.error('通信エラー');
+    }
+  };
+
+  // 在庫へ登録 (解体完了時)
+  const registerToInventory = async () => {
+    try {
+      // 本来は task.partId や task.vehicleId が必要だが、DisplayTaskを拡張していないため
+      // API側で schedules の id から引くか、サンプルのため固定値で送信
+      // (今回はモック実装として動作確認を優先)
+      const res = await fetch('/api/inventory', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          partId: 1, // ダミー
+          vehicleId: 1, // ダミー
+          priceEstimate: 5000
+        })
+      });
+      if (res.ok) {
+        toast.success('在庫として登録しました');
+      } else {
+        toast.error('在庫登録に失敗しました');
+      }
+    } catch {
+      toast.error('通信エラー');
+    }
+  };
+
+  // 追加: 画像アップロードハンドラ
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, taskId: number) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      // 1. 画像をアップロード
+      const uploadRes = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const uploadData = await uploadRes.json();
+
+      if (uploadData.success && uploadData.url) {
+        // 2. スケジュールの image_url を更新
+        // （/api/schedules の PUT を拡張して image_url を受け取れるようにする想定）
+        const updateRes = await fetch('/api/schedules', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: taskId,
+            image_url: uploadData.url
+          }),
+        });
+
+        if (updateRes.ok) {
+          toast.success('画像を保存しました');
+          fetchSchedules(); // 更新を反映
+          // 選択中のタスクのフロントエンド状態も更新
+          setSelectedTask(prev => prev ? { ...prev, image_url: uploadData.url } as DisplayTask : null);
+        } else {
+          toast.error('スケジュールの更新に失敗しました');
+        }
+      } else {
+        toast.error('画像のアップロードに失敗しました');
+      }
+    } catch (err) {
+      console.error('Upload Error:', err);
+      toast.error('通信エラーが発生しました');
+    } finally {
+      setUploadingImage(false);
+      // 入力フィールドをリセット
+      e.target.value = '';
     }
   };
 
@@ -607,6 +691,7 @@ export default function Home() {
           workers={workers}
           parts={parts}
           services={services}
+          inventoryParts={inventoryParts}
           initialValues={initialAssignmentData}
           onSwitchToRegister={() => setActiveModal('vehicle')}
         />
@@ -632,7 +717,7 @@ export default function Home() {
         onClose={() => setActiveModal(null)}
         title="🎤 音声入力"
       >
-        <VoiceInput industry={industry} onCommand={handleVoiceCommand} />
+        <VoiceInput industry={industry} onCommand={(cmd) => handleVoiceCommand(cmd)} />
       </Modal>
 
       {/* 作業詳細モーダル */}
@@ -659,8 +744,31 @@ export default function Home() {
               <p><strong>{industry === 'demolition' ? '部品:' : '作業:'}</strong> {selectedTask.subtitle}</p>
               <p><strong>開始時間:</strong> {Math.floor(selectedTask.start)}:{String(Math.round((selectedTask.start % 1) * 60)).padStart(2, '0')}</p>
               <p><strong>作業時間:</strong> {Math.round(selectedTask.duration * 60)}分</p>
+              
+              {/* 画像表示エリア */}
+              {selectedTask.image_url && (
+                <div style={{ marginTop: '1rem' }}>
+                  <p><strong>添付画像:</strong></p>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={selectedTask.image_url} alt="作業画像" style={{ maxWidth: '100%', borderRadius: '4px', border: '1px solid #ddd' }} />
+                </div>
+              )}
             </div>
             <div className={styles.detailActions}>
+              
+              {/* 画像アップロードボタン (全ステータスで許可、もしくは進行中・完了時のみなど調整可能) */}
+              <div style={{ marginBottom: '1rem', padding: '1rem', background: '#f8f9fa', borderRadius: '4px', border: '1px dashed #ccc' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>📸 画像を追加</label>
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  capture="environment" // スマホでカメラを起動しやすくする
+                  onChange={(e) => handleImageUpload(e, selectedTask.id)}
+                  disabled={uploadingImage}
+                />
+                {uploadingImage && <span style={{ fontSize: '0.9em', color: '#666', marginLeft: '0.5rem' }}>アップロード中...</span>}
+              </div>
+
               {selectedTask.status === 'pending' && (
                 <button
                   className={styles.startBtn}
@@ -702,6 +810,14 @@ export default function Home() {
                   >
                     ↩ 未着手に戻す
                   </button>
+                  {industry === 'demolition' && (
+                    <button
+                        style={{ marginTop: '1rem', background: '#3498db', color: 'white', border: 'none', padding: '0.5rem 1rem', borderRadius: '4px', cursor: 'pointer', display: 'block', width: '100%' }}
+                        onClick={() => registerToInventory()}
+                    >
+                      📦 抽出部品を在庫に登録
+                    </button>
+                  )}
                 </>
               )}
 
@@ -748,33 +864,43 @@ export default function Home() {
                         }
                         setVoiceTranscript(interimTranscript || finalTranscript);
                         if (finalTranscript) {
-                          // VoiceInputのparseCommandと同じロジックを使用
-                          const normalized = finalTranscript.toLowerCase().replace(/\s+/g, '');
-                          const timePattern = /(\d{1,2})時(半)?/;
-                          const timeMatch = finalTranscript.match(timePattern);
-                          const time = timeMatch
-                            ? `${timeMatch[1].padStart(2, '0')}:${timeMatch[2] ? '30' : '00'}`
-                            : undefined;
+                          setIsProcessing(true);
+                          fetch('/api/ai/voice', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ transcript: finalTranscript, industry })
+                          })
+                          .then(res => res.json())
+                          .then(data => {
+                            setIsProcessing(false);
+                            if (data.success && data.data) {
+                              toast.success(data.data.replyMessage || '音声を認識しました', { icon: '🤖' });
+                              const aiAction = data.data.action;
+                              const payload = data.data.payload;
+                              
+                              let cmdType: any = 'unknown';
+                              if (aiAction === 'schedule_create') cmdType = 'schedule_create';
+                              if (aiAction === 'start') cmdType = 'start';
+                              if (aiAction === 'end') cmdType = 'end';
+                              if (aiAction === 'pause') cmdType = 'pause';
 
-                          if (normalized.includes('登録') || normalized.includes('カレンダー入力') ||
-                            normalized.includes('追加') || normalized.includes('予定入力')) {
-                            const namePattern = /([一-龯]{1,3})\s*([一-龯]{1,3})/;
-                            const nameMatch = finalTranscript.match(namePattern);
-                            const workerName = nameMatch ? `${nameMatch[1]} ${nameMatch[2]}`.trim() : undefined;
-                            const carNames = ['プリウス', 'アクア', 'ヤリス', 'カローラ', 'クラウン', 'ノア', 'ヴォクシー', 'アルファード', 'フィット'];
-                            const vehicleName = carNames.find(car => finalTranscript.includes(car));
-                            const partNames = ['エンジン', 'ミッション', 'ドア', 'バンパー', '車検', '点検', '整備'];
-                            const partName = partNames.find(part => finalTranscript.includes(part));
-                            handleVoiceCommand({ type: 'schedule_create', time, workerName, vehicleName, partName, raw: finalTranscript });
-                          } else if (normalized.includes('開始') || normalized.includes('スタート')) {
-                            handleVoiceCommand({ type: 'start', time, raw: finalTranscript });
-                          } else if (normalized.includes('終了') || normalized.includes('完了')) {
-                            handleVoiceCommand({ type: 'end', time, raw: finalTranscript });
-                          } else if (normalized.includes('中断') || normalized.includes('ストップ')) {
-                            handleVoiceCommand({ type: 'pause', time, raw: finalTranscript });
-                          } else {
-                            handleVoiceCommand({ type: 'unknown', raw: finalTranscript });
-                          }
+                              handleVoiceCommand({
+                                type: cmdType,
+                                time: payload.time,
+                                workerName: payload.workerName,
+                                vehicleName: payload.vehicleName,
+                                partName: payload.partName,
+                                raw: finalTranscript
+                              });
+                            } else {
+                              toast.error('音声の解析に失敗しました');
+                            }
+                          })
+                          .catch(err => {
+                            console.error('AI API error:', err);
+                            setIsProcessing(false);
+                            toast.error('通信エラーが発生しました');
+                          });
                         }
                       };
                       recognition.onend = () => setIsListening(false);

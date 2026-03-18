@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ success: false, error: 'Date is required' }, { status: 400 });
         }
 
-        const schedules = getSchedules(date, industry || undefined);
+        const schedules = await getSchedules(date, industry || undefined);
 
         // CSVヘッダー
         const header = [

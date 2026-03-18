@@ -1,22 +1,22 @@
 import { NextResponse } from 'next/server';
-import { getDatabase } from '@/lib/db';
+import { getDB } from '@/lib/db';
 
 // GET /api/master - マスタデータ取得
 export async function GET(request: Request) {
     try {
         const { searchParams } = new URL(request.url);
         const industry = searchParams.get('industry'); // 'demolition' | 'auto_repair'
-        const db = getDatabase();
+        const db = getDB();
 
         let parts: any[] = [];
         let services: any[] = [];
 
         if (!industry || industry === 'demolition') {
-            parts = db.prepare('SELECT * FROM parts_master ORDER BY id').all();
+            parts = await db.query('SELECT * FROM parts_master ORDER BY id');
         }
 
         if (!industry || industry === 'auto_repair') {
-            services = db.prepare('SELECT * FROM service_menus ORDER BY id').all();
+            services = await db.query('SELECT * FROM service_menus ORDER BY id');
         }
 
         return NextResponse.json({
